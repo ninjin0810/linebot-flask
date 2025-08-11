@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 # v3 SDK
 from linebot.v3.webhook import WebhookHandler, MessageEvent
-from linebot.v3.webhook import TextMessageContent, ImageMessageContent
+from linebot.v3.messaging import TextMessageContent, ImageMessageContent
 from linebot.v3.messaging import MessagingApi, ReplyMessageRequest, TextMessage
 
 load_dotenv()
@@ -52,3 +52,4 @@ if __name__ == "__main__":
 @app.route("/health")
 def health():
     return "ok", 200
+
