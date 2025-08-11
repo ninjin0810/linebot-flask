@@ -2,9 +2,9 @@ from flask import Flask, request, abort
 import os
 from dotenv import load_dotenv
 
-# v3 SDK
-from linebot.v3.webhook import WebhookHandler, MessageEvent
-from linebot.v3.messaging import TextMessageContent, ImageMessageContent
+# ✅ v3 SDK: Handler は webhook（単数）、Event/Content は webhooks（複数）
+from linebot.v3.webhook import WebhookHandler
+from linebot.v3.webhooks import MessageEvent, TextMessageContent, ImageMessageContent
 from linebot.v3.messaging import MessagingApi, ReplyMessageRequest, TextMessage
 
 load_dotenv()
@@ -36,7 +36,6 @@ def on_text(event):
         )
     )
 
-#（任意：画像受信の下地。後で手相解析をここに繋ぐ）
 @handler.add(MessageEvent, message=ImageMessageContent)
 def on_image(event):
     messaging_api.reply_message(
@@ -46,10 +45,10 @@ def on_image(event):
         )
     )
 
-if __name__ == "__main__":
-    app.run()
-
+# ヘルスチェック（ブラウザで /health が 200 "ok" なら起動中）
 @app.route("/health")
 def health():
     return "ok", 200
 
+if __name__ == "__main__":
+    app.run()
