@@ -2,10 +2,11 @@ from flask import Flask, request, abort
 import os
 from dotenv import load_dotenv
 
-# ✅ v3 SDK: Handler は webhook（単数）、Event/Content は webhooks（複数）
+# v3 SDK
 from linebot.v3.webhook import WebhookHandler
 from linebot.v3.webhooks import MessageEvent, TextMessageContent, ImageMessageContent
-from linebot.v3.messaging import MessagingApi, ReplyMessageRequest, TextMessage
+from linebot.v3.messaging import MessagingApi, ReplyMessageRequest, TextMessage, Configuration
+from linebot.v3 import ApiClient  # ApiClient はここ
 
 load_dotenv()
 app = Flask(__name__)
@@ -13,8 +14,10 @@ app = Flask(__name__)
 CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
 CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
+# ✅ v3の正しい初期化
 handler = WebhookHandler(CHANNEL_SECRET)
-messaging_api = MessagingApi.from_access_token(CHANNEL_ACCESS_TOKEN)
+config = Configuration(access_token=CHANNEL_ACCESS_TOKEN)
+messaging_api = MessagingApi(ApiClient(config))
 
 @app.route("/callback", methods=["POST"])
 def callback():
@@ -45,7 +48,7 @@ def on_image(event):
         )
     )
 
-# ヘルスチェック（ブラウザで /health が 200 "ok" なら起動中）
+# ヘルスチェック
 @app.route("/health")
 def health():
     return "ok", 200
