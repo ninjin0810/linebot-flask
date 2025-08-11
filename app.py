@@ -48,3 +48,7 @@ def on_image(event):
 
 if __name__ == "__main__":
     app.run()
+
+@app.route("/health")
+def health():
+    return "ok", 200
